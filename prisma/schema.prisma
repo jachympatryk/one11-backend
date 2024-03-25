@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int                 @id @default(autoincrement())
+  password        String
+  email           String              @unique
+  signup_datetime DateTime            @default(now())
+  name            String
+  surname         String
+  created_at      DateTime            @default(now())
+  players         UserPlayers[]
+  functionaries   UserFunctionaries[]
+}
+
+model Team {
+  id            Int           @id @default(autoincrement())
+  team_name     String
+  clubId        Int // Klucz obcy wskazujący na Club
+  club          Club          @relation(fields: [clubId], references: [id])
+  created_at    DateTime      @default(now())
+  players       Player[]
+  functionaries Functionary[]
+  events        Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
+}
+
+model Club {
+  id            Int           @id @default(autoincrement())
+  club_name     String
+  created_at    DateTime      @default(now())
+  teams         Team[]
+  players       Player[]
+  functionaries Functionary[]
+  locations     Location[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Location
+}
+
+model Location {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  map_pin    String?
+  clubId     Int // Klucz obcy wskazujący na Club
+  club       Club     @relation(fields: [clubId], references: [id]) // Definicja relacji
+}
+
+model League {
+  id          Int      @id @default(autoincrement())
+  league_name String
+  created_at  DateTime @default(now())
+}
+
+model Player {
+  id            Int           @id @default(autoincrement())
+  name          String
+  surname       String
+  date_of_birth DateTime
+  number        Int
+  active        Boolean       @default(true)
+  created_at    DateTime      @default(now())
+  teamId        Int? // Klucz obcy wskazujący na Team, opcjonalny
+  team          Team?         @relation(fields: [teamId], references: [id]) // Definicja relacji
+  clubId        Int? // Klucz obcy wskazujący na Club, opcjonalny
+  club          Club?         @relation(fields: [clubId], references: [id]) // Dodano relację z Club
+  users         UserPlayers[]
+}
+
+model Functionary {
+  id         Int                 @id @default(autoincrement())
+  name       String
+  surname    String
+  role       FunctionaryRoleType
+  created_at DateTime            @default(now())
+  teamId     Int? // Klucz obcy wskazujący na Team, opcjonalny
+  team       Team?               @relation(fields: [teamId], references: [id]) // Definicja relacji
+  clubId     Int? // Klucz obcy wskazujący na Club, opcjonalny
+  club       Club?               @relation(fields: [clubId], references: [id]) // Dodano relację z Club
+  users      UserFunctionaries[]
+}
+
+enum FunctionaryRoleType {
+  PRESIDENT
+  COACH
+  MANAGEMENT
+  OTHER
+  HEALTHCARE
+}
+
+model Event {
+  id                 Int       @id @default(autoincrement())
+  name               String
+  event_type         EventType
+  created_at         DateTime  @default(now())
+  created_by         String
+  start_time         DateTime
+  end_time           DateTime?
+  line_up            String?
+  opponent           String?
+  collection_time    DateTime?
+  own_transport      Boolean?
+  description_before String?
+  description_after  String?
+  teamId             Int // Klucz obcy wskazujący na Team
+  team               Team      @relation(fields: [teamId], references: [id]) // Definicja relacji
+}
+
+enum EventType {
+  MATCH
+  TRAINING
+  MEETING
+  OTHER
+}
+
+model UserPlayers {
+  userId   Int
+  playerId Int
+  user     User   @relation(fields: [userId], references: [id])
+  player   Player @relation(fields: [playerId], references: [id])
+
+  @@id([userId, playerId])
+}
+
+model UserFunctionaries {
+  userId        Int
+  functionaryId Int
+  user          User        @relation(fields: [userId], references: [id])
+  functionary   Functionary @relation(fields: [functionaryId], references: [id])
+
+  @@id([userId, functionaryId])
+}
