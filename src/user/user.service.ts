@@ -5,7 +5,12 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
-  // Pobierz wszystkich graczy dla danego użytkownika
+  async getUserByAuthId(auth_id: string) {
+    return this.prisma.user.findUnique({
+      where: { auth_id },
+    });
+  }
+
   async findUserPlayers(userId: number) {
     return this.prisma.userPlayers.findMany({
       where: {
@@ -27,5 +32,30 @@ export class UserService {
       },
     });
   }
-}
 
+  async createOrUpdateUser(
+    auth_id: string,
+    email: string,
+    name?: string,
+    surname?: string
+  ) {
+    const user = await this.prisma.user.upsert({
+      where: { auth_id },
+      update: {
+        email,
+        name,
+        surname,
+      },
+      create: {
+        auth_id,
+        email,
+        name: name ? name : 'User',
+        surname: surname ? surname : 'Surname',
+        created_at: new Date(),
+        signup_datetime: new Date(),
+      },
+    });
+
+    return user;
+  }
+}
