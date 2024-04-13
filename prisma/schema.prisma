@@ -28,6 +28,7 @@ model Team {
   players       Player[]
   functionaries Functionary[]
   events        Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
+  scrapeUrl     String? // Opcjonalny URL do scrapowania danych o zespole
 }
 
 model Club {
