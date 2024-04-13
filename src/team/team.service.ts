@@ -5,14 +5,28 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TeamService {
   constructor(private prisma: PrismaService) {}
 
-  async findTeamById(teamId: number) {
+  async findTeamById(
+    teamId: number,
+    includeOptions: {
+      players: boolean;
+      events: boolean;
+      functionaries: boolean;
+    }
+  ) {
     return this.prisma.team.findUnique({
       where: { id: teamId },
       include: {
-        players: true, // Opcjonalnie: załącz informacje o graczach
-        functionaries: true, // Opcjonalnie: załącz informacje o funkcjonariuszach
-        events: true, // Opcjonalnie: załącz informacje o wydarzeniach
+        players: includeOptions.players,
+        functionaries: includeOptions.functionaries,
+        events: includeOptions.events,
       },
+    });
+  }
+
+  async findTeamEventsById(teamId: number) {
+    return this.prisma.team.findUnique({
+      where: { id: teamId },
+      include: { events: true },
     });
   }
 }

@@ -5,6 +5,16 @@ import { PrismaService } from '../prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async findUserById(userId: number) {
+    return this.prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        players: true,
+        functionaries: true,
+      },
+    });
+  }
+
   async getUserByAuthId(auth_id: string) {
     return this.prisma.user.findUnique({
       where: { auth_id },

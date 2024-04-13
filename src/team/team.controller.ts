@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe } from '@nestjs/common';
 import { TeamService } from './team.service';
 
 @Controller('teams')
@@ -7,6 +7,16 @@ export class TeamController {
 
   @Get(':id')
   getTeamById(@Param('id', ParseIntPipe) teamId: number) {
-    return this.teamService.findTeamById(teamId);
+    const includeOptions = {
+      players: true,
+      events: true,
+      functionaries: true,
+    };
+    return this.teamService.findTeamById(teamId, includeOptions);
+  }
+
+  @Get(':id/events')
+  getTeamEvents(@Param('id', ParseIntPipe) teamId: number) {
+    return this.teamService.findTeamEventsById(teamId);
   }
 }

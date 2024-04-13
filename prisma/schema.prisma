@@ -56,18 +56,26 @@ model League {
 }
 
 model Player {
-  id            Int           @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   name          String
   surname       String
   date_of_birth DateTime
   number        Int
-  active        Boolean       @default(true)
-  created_at    DateTime      @default(now())
+  active        Boolean        @default(true)
+  created_at    DateTime       @default(now())
   teamId        Int? // Klucz obcy wskazujący na Team, opcjonalny
-  team          Team?         @relation(fields: [teamId], references: [id]) // Definicja relacji
+  team          Team?          @relation(fields: [teamId], references: [id]) // Definicja relacji
   clubId        Int? // Klucz obcy wskazujący na Club, opcjonalny
-  club          Club?         @relation(fields: [clubId], references: [id]) // Dodano relację z Club
+  club          Club?          @relation(fields: [clubId], references: [id]) // Dodano relację z Club
   users         UserPlayers[]
+  position      PlayerPosition // New field for player position
+}
+
+enum PlayerPosition {
+  GOALKEEPER
+  DEFENDER
+  MIDFIELDER
+  STRIKER
 }
 
 model Functionary {

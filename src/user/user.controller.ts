@@ -12,6 +12,12 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  // TODO: get user with players and functionaries
+  @Get('/:id')
+  getUserById(@Param('id', ParseIntPipe) userId: number) {
+    return this.userService.findUserById(userId);
+  }
+
   @Get('/:id/players')
   findUserPlayers(@Param('id', ParseIntPipe) userId: number) {
     return this.userService.findUserPlayers(userId);
