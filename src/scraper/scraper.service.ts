@@ -8,6 +8,10 @@ export class ScraperService {
   async scrape(url: string): Promise<any[]> {
     const config: AxiosRequestConfig = {
       responseType: 'arraybuffer',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+      },
     };
 
     try {
@@ -15,13 +19,18 @@ export class ScraperService {
       const decodedResponse = iconv.decode(response.data, 'ISO-8859-2');
       const $ = cheerio.load(decodedResponse);
       const teams = [];
+      const teamNames = new Set();
 
       $('table tr').each((index, element) => {
         const tds = $(element)
           .find('td')
           .toArray()
           .map((td) => $(td).text().trim());
-        if (tds.length > 1 && !isNaN(parseInt(tds[0], 10))) {
+        if (
+          tds.length > 1 &&
+          !isNaN(parseInt(tds[0], 10)) &&
+          !teamNames.has(tds[1])
+        ) {
           const teamData = {
             rank: parseInt(tds[0], 10),
             name: tds[1],
@@ -41,6 +50,7 @@ export class ScraperService {
             awayGoalsForAgainst: tds[15],
           };
           teams.push(teamData);
+          teamNames.add(tds[1]);
         }
       });
 
