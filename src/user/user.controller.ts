@@ -48,6 +48,8 @@ export class UserController {
 
   @Get('/by-auth-id/:auth_id')
   getUserByAuthId(@Param('auth_id') auth_id: string) {
+    console.log('auth_id');
+
     return this.userService.getUserByAuthId(auth_id);
   }
 }
