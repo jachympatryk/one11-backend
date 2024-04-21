@@ -16,6 +16,7 @@ export class ScraperService {
 
     try {
       const response = await axios.get(url, config);
+
       const decodedResponse = iconv.decode(response.data, 'ISO-8859-2');
       const $ = cheerio.load(decodedResponse);
       const teams = [];

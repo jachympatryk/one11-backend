@@ -64,12 +64,15 @@ model Player {
   number        Int
   active        Boolean        @default(true)
   created_at    DateTime       @default(now())
-  teamId        Int? // Klucz obcy wskazujący na Team, opcjonalny
-  team          Team?          @relation(fields: [teamId], references: [id]) // Definicja relacji
-  clubId        Int? // Klucz obcy wskazujący na Club, opcjonalny
-  club          Club?          @relation(fields: [clubId], references: [id]) // Dodano relację z Club
+  teamId        Int?
+  team          Team?          @relation(fields: [teamId], references: [id])
+  clubId        Int?
+  club          Club?          @relation(fields: [clubId], references: [id])
   users         UserPlayers[]
-  position      PlayerPosition // New field for player position
+  position      PlayerPosition
+  attendances   Attendance[]
+
+  @@index([teamId, clubId])
 }
 
 enum PlayerPosition {
@@ -101,10 +104,10 @@ enum FunctionaryRoleType {
 }
 
 model Event {
-  id                 Int       @id @default(autoincrement())
+  id                 Int          @id @default(autoincrement())
   name               String
   event_type         EventType
-  created_at         DateTime  @default(now())
+  created_at         DateTime     @default(now())
   created_by         String
   start_time         DateTime
   end_time           DateTime?
@@ -114,8 +117,11 @@ model Event {
   own_transport      Boolean?
   description_before String?
   description_after  String?
-  teamId             Int // Klucz obcy wskazujący na Team
-  team               Team      @relation(fields: [teamId], references: [id]) // Definicja relacji
+  teamId             Int
+  team               Team         @relation(fields: [teamId], references: [id])
+  attendances        Attendance[]
+
+  @@index([teamId])
 }
 
 enum EventType {
@@ -123,6 +129,27 @@ enum EventType {
   TRAINING
   MEETING
   OTHER
+}
+
+model Attendance {
+  id         Int              @id @default(autoincrement())
+  eventId    Int
+  playerId   Int
+  status     AttendanceStatus
+  created_at DateTime         @default(now())
+
+  event  Event  @relation(fields: [eventId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([eventId, playerId])
+}
+
+enum AttendanceStatus {
+  CONFIRMED
+  ABSENT
+  LATE
+  EXCUSED
+  PENDING
 }
 
 model UserPlayers {
