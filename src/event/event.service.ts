@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AttendanceStatus } from '@prisma/client'; // Uwzględnij import dla AttendanceStatus
+import { Attendance, AttendanceStatus } from '@prisma/client'; // Uwzględnij import dla AttendanceStatus
 
 @Injectable()
 export class EventsService {
@@ -13,6 +13,29 @@ export class EventsService {
         attendances: true,
       },
     });
+  }
+
+  async updateAttendanceStatus(
+    eventId: number,
+    playerId: number,
+    status: AttendanceStatus
+  ): Promise<Attendance | null> {
+    try {
+      return await this.prisma.attendance.update({
+        where: {
+          eventId_playerId: {
+            eventId: eventId,
+            playerId: playerId,
+          },
+        },
+        data: {
+          status: status,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to update attendance status:', error);
+      throw new Error('Error updating attendance status');
+    }
   }
 
   async create(eventData: any) {
