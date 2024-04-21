@@ -5,7 +5,7 @@ import {
   ParseIntPipe,
   Post,
   Body,
-  Patch,
+  Put,
 } from '@nestjs/common';
 import { EventsService } from './event.service';
 import { AttendanceStatus } from '@prisma/client';
@@ -19,7 +19,7 @@ export class EventsController {
     return this.eventsService.create(eventData);
   }
 
-  @Patch(':eventId/attendances/:playerId')
+  @Put(':eventId/attendances/:playerId')
   updateAttendanceStatus(
     @Param('eventId', ParseIntPipe) eventId: number,
     @Param('playerId', ParseIntPipe) playerId: number,
