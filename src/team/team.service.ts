@@ -37,7 +37,7 @@ export class TeamService {
         table: tableData,
       };
     }
-    console.log('team', team);
+
     return team;
   }
 
