@@ -8,6 +8,8 @@ async function bootstrap() {
     origin: '*',
   });
 
+  return;
+
   await app.listen(8080);
 }
 
