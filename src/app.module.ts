@@ -8,9 +8,19 @@ import { ScraperService } from './scraper/scraper.service';
 import { EventsModule } from './event/event.module';
 import { PlayerModule } from './player/player.module';
 import { ApiKeyMiddleware } from './api-key.middleware'; // Zaimportuj middleware do sprawdzania klucza API
+import { ConversationModule } from './conversation/conversation.module';
+import { MessageModule } from './message/message.module';
 
 @Module({
-  imports: [UserModule, PrismaModule, TeamModule, EventsModule, PlayerModule],
+  imports: [
+    UserModule,
+    PrismaModule,
+    TeamModule,
+    EventsModule,
+    PlayerModule,
+    ConversationModule,
+    MessageModule,
+  ],
   controllers: [AppController],
   providers: [AppService, ScraperService],
 })
