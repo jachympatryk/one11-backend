@@ -20,15 +20,16 @@ model User {
 }
 
 model Team {
-  id            Int           @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   team_name     String
   clubId        Int // Klucz obcy wskazujący na Club
-  club          Club          @relation(fields: [clubId], references: [id])
-  created_at    DateTime      @default(now())
+  club          Club           @relation(fields: [clubId], references: [id])
+  created_at    DateTime       @default(now())
   players       Player[]
   functionaries Functionary[]
   events        Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
   scrapeUrl     String? // Opcjonalny URL do scrapowania danych o zespole
+  Conversation  Conversation[]
 }
 
 model Club {
@@ -71,6 +72,7 @@ model Player {
   users         UserPlayers[]
   position      PlayerPosition
   attendances   Attendance[]
+  Message       Message[]
 
   @@index([teamId, clubId])
 }
@@ -93,6 +95,7 @@ model Functionary {
   clubId     Int? // Klucz obcy wskazujący na Club, opcjonalny
   club       Club?               @relation(fields: [clubId], references: [id]) // Dodano relację z Club
   users      UserFunctionaries[]
+  Message    Message[]
 }
 
 enum FunctionaryRoleType {
@@ -168,4 +171,27 @@ model UserFunctionaries {
   functionary   Functionary @relation(fields: [functionaryId], references: [id])
 
   @@id([userId, functionaryId])
+}
+
+model Conversation {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  name       String
+  teamId     Int
+  team       Team      @relation(fields: [teamId], references: [id]) // Relacja z Team
+  messages   Message[]
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  content        String
+  created_at     DateTime     @default(now())
+  conversationId Int // Klucz obcy wskazujący na Conversation
+  conversation   Conversation @relation(fields: [conversationId], references: [id]) // Relacja z Conversation
+  playerId       Int? // Klucz obcy opcjonalny wskazujący na Player
+  player         Player?      @relation(fields: [playerId], references: [id]) // Opcjonalna relacja z Player
+  functionaryId  Int? // Klucz obcy opcjonalny wskazujący na Functionary
+  functionary    Functionary? @relation(fields: [functionaryId], references: [id]) // Opcjonalna relacja z Functionary
+
+  @@index([conversationId, playerId, functionaryId])
 }
