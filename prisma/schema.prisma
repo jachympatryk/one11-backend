@@ -178,7 +178,7 @@ model Conversation {
   created_at DateTime  @default(now())
   name       String
   teamId     Int
-  team       Team      @relation(fields: [teamId], references: [id]) // Relacja z Team
+  team       Team      @relation(fields: [teamId], references: [id])
   messages   Message[]
 }
 
