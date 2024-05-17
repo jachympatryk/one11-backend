@@ -10,6 +10,9 @@ import { PlayerModule } from './player/player.module';
 import { ApiKeyMiddleware } from './api-key.middleware'; // Zaimportuj middleware do sprawdzania klucza API
 import { ConversationModule } from './conversation/conversation.module';
 import { MessageModule } from './message/message.module';
+import { TeamLineupsModule } from './team-lineups/team-lineups.module';
+import { TeamLineupsController } from './team-lineups/team-lineups.controller';
+import { TeamLineupsService } from './team-lineups/team-lineups.service';
 
 @Module({
   imports: [
@@ -20,9 +23,10 @@ import { MessageModule } from './message/message.module';
     PlayerModule,
     ConversationModule,
     MessageModule,
+    TeamLineupsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, ScraperService],
+  controllers: [AppController, TeamLineupsController],
+  providers: [AppService, ScraperService, TeamLineupsService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

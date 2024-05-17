@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "prisma generate && nest build",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -59,7 +59,6 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   },
-
   "jest": {
     "moduleFileExtensions": [
       "js",

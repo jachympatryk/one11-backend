@@ -53,12 +53,10 @@ export class UserService {
       where: { auth_id },
       update: {
         email,
-        name,
-        surname,
       },
       create: {
         auth_id,
-        email,
+        email: email,
         name: name ? name : 'User',
         surname: surname ? surname : 'Surname',
         created_at: new Date(),
