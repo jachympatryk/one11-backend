@@ -1,12 +1,11 @@
-// auth.module.ts
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { UserService } from '../user/user.service'; // Ścieżka do PrismaModule
+import { UserService } from '../user/user.service';
 
 @Module({
-  imports: [PrismaModule], // Importuj PrismaModule
+  imports: [PrismaModule],
   providers: [AuthService, UserService],
   controllers: [AuthController],
 })

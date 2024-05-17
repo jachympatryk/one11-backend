@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL_PROD")
 }
 
 model User {
@@ -30,6 +31,7 @@ model Team {
   events        Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
   scrapeUrl     String? // Opcjonalny URL do scrapowania danych o zespole
   Conversation  Conversation[]
+  TeamLineup    TeamLineup[]
 }
 
 model Club {
@@ -73,6 +75,7 @@ model Player {
   position      PlayerPosition
   attendances   Attendance[]
   Message       Message[]
+  LineupPlayer  LineupPlayer[]
 
   @@index([teamId, clubId])
 }
@@ -153,6 +156,27 @@ enum AttendanceStatus {
   LATE
   EXCUSED
   PENDING
+}
+
+model TeamLineup {
+  id            Int            @id @default(autoincrement())
+  name          String
+  formationName String         @default("Nieokreślona")
+  created_at    DateTime       @default(now())
+  teamId        Int
+  team          Team           @relation(fields: [teamId], references: [id])
+  players       LineupPlayer[]
+}
+
+model LineupPlayer {
+  id             Int        @id @default(autoincrement())
+  playerPosition String
+  playerId       Int
+  lineupId       Int
+  player         Player     @relation(fields: [playerId], references: [id])
+  lineup         TeamLineup @relation(fields: [lineupId], references: [id])
+
+  @@unique([lineupId, playerPosition])
 }
 
 model UserPlayers {
