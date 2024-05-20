@@ -22,7 +22,11 @@ export class TeamService {
       include: {
         players: includeOptions.players,
         functionaries: includeOptions.functionaries,
-        events: includeOptions.events,
+        events: {
+          include: {
+            location: true,
+          },
+        },
       },
     });
 

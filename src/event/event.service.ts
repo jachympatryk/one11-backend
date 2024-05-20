@@ -11,6 +11,7 @@ export class EventsService {
       where: { id: eventId },
       include: {
         attendances: true,
+        location: true,
       },
     });
   }

@@ -41,7 +41,7 @@ model Club {
   teams         Team[]
   players       Player[]
   functionaries Functionary[]
-  locations     Location[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Location
+  locations     Location[]
 }
 
 model Location {
@@ -51,6 +51,7 @@ model Location {
   map_pin    String?
   clubId     Int // Klucz obcy wskazujący na Club
   club       Club     @relation(fields: [clubId], references: [id]) // Definicja relacji
+  events     Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
 }
 
 model League {
@@ -126,8 +127,10 @@ model Event {
   teamId             Int
   team               Team         @relation(fields: [teamId], references: [id])
   attendances        Attendance[]
+  locationId         Int?
+  location           Location?    @relation(fields: [locationId], references: [id]) // Definicja relacji z Location
 
-  @@index([teamId])
+  @@index([teamId, locationId]) // Zaktualizowany indeks z nowym polem locationId
 }
 
 enum EventType {
