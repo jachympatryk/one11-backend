@@ -9,24 +9,11 @@ export class TeamService {
     private scraperService: ScraperService
   ) {}
 
-  async findTeamById(
-    teamId: number,
-    includeOptions: {
-      players: boolean;
-      events: boolean;
-      functionaries: boolean;
-    }
-  ) {
+  async findTeamById(teamId: number) {
     const team = await this.prisma.team.findUnique({
       where: { id: teamId },
       include: {
-        players: includeOptions.players,
-        functionaries: includeOptions.functionaries,
-        events: {
-          include: {
-            location: true,
-          },
-        },
+        club: true,
       },
     });
 
@@ -45,10 +32,15 @@ export class TeamService {
     return team;
   }
 
-  async findTeamEventsById(teamId: number) {
-    return this.prisma.team.findUnique({
-      where: { id: teamId },
-      include: { events: true },
+  async findTeamPlayers(teamId: number) {
+    return this.prisma.player.findMany({
+      where: { teamId: teamId },
+    });
+  }
+
+  async findTeamLineups(teamId: number) {
+    return this.prisma.teamLineup.findMany({
+      where: { teamId: teamId },
     });
   }
 }

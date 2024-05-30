@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // url      = env("DATABASE_URL_PROD")
+  // url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_PROD")
 }
 
 model User {
@@ -118,7 +118,8 @@ model Event {
   created_by         String
   start_time         DateTime
   end_time           DateTime?
-  line_up            String?
+  lineupId           Int?
+  lineup             TeamLineup?  @relation(fields: [lineupId], references: [id])
   opponent           String?
   collection_time    DateTime?
   own_transport      Boolean?
@@ -128,9 +129,9 @@ model Event {
   team               Team         @relation(fields: [teamId], references: [id])
   attendances        Attendance[]
   locationId         Int?
-  location           Location?    @relation(fields: [locationId], references: [id]) // Definicja relacji z Location
+  location           Location?    @relation(fields: [locationId], references: [id])
 
-  @@index([teamId, locationId]) // Zaktualizowany indeks z nowym polem locationId
+  @@index([teamId, locationId])
 }
 
 enum EventType {
@@ -169,6 +170,7 @@ model TeamLineup {
   teamId        Int
   team          Team           @relation(fields: [teamId], references: [id])
   players       LineupPlayer[]
+  Event         Event[]
 }
 
 model LineupPlayer {

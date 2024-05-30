@@ -7,16 +7,16 @@ export class TeamController {
 
   @Get(':id')
   getTeamById(@Param('id', ParseIntPipe) teamId: number) {
-    const includeOptions = {
-      players: true,
-      events: true,
-      functionaries: true,
-    };
-    return this.teamService.findTeamById(teamId, includeOptions);
+    return this.teamService.findTeamById(teamId);
   }
 
-  @Get(':id/events')
-  getTeamEvents(@Param('id', ParseIntPipe) teamId: number) {
-    return this.teamService.findTeamEventsById(teamId);
+  @Get(':id/players')
+  getTeamPlayers(@Param('id', ParseIntPipe) teamId: number) {
+    return this.teamService.findTeamPlayers(teamId);
+  }
+
+  @Get(':id/lineups')
+  getTeamLineups(@Param('id', ParseIntPipe) teamId: number) {
+    return this.teamService.findTeamLineups(teamId);
   }
 }

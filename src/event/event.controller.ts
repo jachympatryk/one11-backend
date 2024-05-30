@@ -36,4 +36,9 @@ export class EventsController {
   getEvent(@Param('id', ParseIntPipe) eventId: number) {
     return this.eventsService.getEventWithAttendances(eventId);
   }
+
+  @Get('/team/:id')
+  getTeamEvents(@Param('id', ParseIntPipe) teamId: number) {
+    return this.eventsService.getTeamEvents(teamId);
+  }
 }
