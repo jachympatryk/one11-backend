@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Attendance, AttendanceStatus } from '@prisma/client'; // Uwzględnij import dla AttendanceStatus
+import { Attendance, AttendanceStatus } from '@prisma/client';
 
 @Injectable()
 export class EventsService {
@@ -11,6 +11,27 @@ export class EventsService {
       where: { id: eventId },
       include: {
         attendances: true,
+        lineup: {
+          include: {
+            players: true,
+          },
+        },
+        location: true,
+      },
+    });
+  }
+
+  async getTeamEvents(teamId: number) {
+    return this.prisma.event.findMany({
+      where: { teamId: teamId },
+      include: {
+        attendances: true,
+        lineup: {
+          include: {
+            players: true,
+          },
+        },
+        location: true,
       },
     });
   }

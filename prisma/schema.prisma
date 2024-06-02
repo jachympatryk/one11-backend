@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
-  // url      = env("DATABASE_URL_PROD")
+  // url      = env("DATABASE_URL")
+  url      = env("DATABASE_URL_PROD")
 }
 
 model User {
@@ -41,7 +41,7 @@ model Club {
   teams         Team[]
   players       Player[]
   functionaries Functionary[]
-  locations     Location[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Location
+  locations     Location[]
 }
 
 model Location {
@@ -51,6 +51,7 @@ model Location {
   map_pin    String?
   clubId     Int // Klucz obcy wskazujący na Club
   club       Club     @relation(fields: [clubId], references: [id]) // Definicja relacji
+  events     Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
 }
 
 model League {
@@ -117,7 +118,8 @@ model Event {
   created_by         String
   start_time         DateTime
   end_time           DateTime?
-  line_up            String?
+  lineupId           Int?
+  lineup             TeamLineup?  @relation(fields: [lineupId], references: [id])
   opponent           String?
   collection_time    DateTime?
   own_transport      Boolean?
@@ -126,8 +128,10 @@ model Event {
   teamId             Int
   team               Team         @relation(fields: [teamId], references: [id])
   attendances        Attendance[]
+  locationId         Int?
+  location           Location?    @relation(fields: [locationId], references: [id])
 
-  @@index([teamId])
+  @@index([teamId, locationId])
 }
 
 enum EventType {
@@ -166,6 +170,7 @@ model TeamLineup {
   teamId        Int
   team          Team           @relation(fields: [teamId], references: [id])
   players       LineupPlayer[]
+  Event         Event[]
 }
 
 model LineupPlayer {

@@ -5,15 +5,6 @@ import { PrismaService } from '../prisma/prisma.service';
 export class TeamLineupsService {
   constructor(private prisma: PrismaService) {}
 
-  async getLineupsByTeamId(teamId: number) {
-    return this.prisma.teamLineup.findMany({
-      where: { teamId },
-      include: {
-        players: true,
-      },
-    });
-  }
-
   async createLineup(teamId: number, lineupData: any) {
     return this.prisma.teamLineup.create({
       data: {
