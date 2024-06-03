@@ -22,6 +22,7 @@ export class TeamLineupsController {
 
   @Get(':lineupId')
   getLineupById(@Param('lineupId', ParseIntPipe) lineupId: number) {
+    console.log('');
     return this.teamLineupsService.getLineupById(lineupId);
   }
 }
