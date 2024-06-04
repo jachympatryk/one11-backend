@@ -23,9 +23,14 @@ export class TeamService {
 
     if (team.scrapeUrl) {
       const tableData = await this.scraperService.scrape(team.scrapeUrl);
+      const matchWeeks = await this.scraperService.scrapeMatchWeeks(
+        team.scrapeUrl
+      );
+
       return {
         ...team,
         table: tableData,
+        matchWeeks: matchWeeks,
       };
     }
 
