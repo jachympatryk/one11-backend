@@ -180,8 +180,6 @@ model LineupPlayer {
   lineupId       Int
   player         Player     @relation(fields: [playerId], references: [id])
   lineup         TeamLineup @relation(fields: [lineupId], references: [id])
-
-  @@unique([lineupId, playerPosition])
 }
 
 model UserPlayers {
