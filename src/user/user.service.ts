@@ -15,9 +15,9 @@ export class UserService {
     });
   }
 
-  async getUserByAuthId(auth_id: string) {
+  async getUserByAuthId(auth_id: number) {
     return this.prisma.user.findUnique({
-      where: { auth_id },
+      where: { id: auth_id },
     });
   }
 
@@ -41,29 +41,5 @@ export class UserService {
         functionary: true,
       },
     });
-  }
-
-  async createOrUpdateUser(
-    auth_id: string,
-    email: string,
-    name?: string,
-    surname?: string
-  ) {
-    const user = await this.prisma.user.upsert({
-      where: { auth_id },
-      update: {
-        email,
-      },
-      create: {
-        auth_id,
-        email: email,
-        name: name ? name : 'User',
-        surname: surname ? surname : 'Surname',
-        created_at: new Date(),
-        signup_datetime: new Date(),
-      },
-    });
-
-    return user;
   }
 }

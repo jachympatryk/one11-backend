@@ -13,6 +13,7 @@ import { MessageModule } from './message/message.module';
 import { TeamLineupsModule } from './team-lineups/team-lineups.module';
 import { TeamLineupsController } from './team-lineups/team-lineups.controller';
 import { TeamLineupsService } from './team-lineups/team-lineups.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TeamLineupsService } from './team-lineups/team-lineups.service';
     ConversationModule,
     MessageModule,
     TeamLineupsModule,
+    AuthModule,
   ],
   controllers: [AppController, TeamLineupsController],
   providers: [AppService, ScraperService, TeamLineupsService],
