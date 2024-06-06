@@ -112,15 +112,13 @@ enum FunctionaryRoleType {
 
 model Event {
   id                 Int          @id @default(autoincrement())
-  name               String
+  name               String?
   event_type         EventType
   created_at         DateTime     @default(now())
-  created_by         String
   start_time         DateTime
   end_time           DateTime?
   lineupId           Int?
   lineup             TeamLineup?  @relation(fields: [lineupId], references: [id])
-  opponent           String?
   collection_time    DateTime?
   own_transport      Boolean?
   description_before String?
@@ -147,9 +145,8 @@ model Attendance {
   playerId   Int
   status     AttendanceStatus
   created_at DateTime         @default(now())
-
-  event  Event  @relation(fields: [eventId], references: [id])
-  player Player @relation(fields: [playerId], references: [id])
+  event      Event            @relation(fields: [eventId], references: [id])
+  player     Player           @relation(fields: [playerId], references: [id])
 
   @@unique([eventId, playerId])
 }

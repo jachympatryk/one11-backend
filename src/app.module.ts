@@ -14,6 +14,7 @@ import { TeamLineupsModule } from './team-lineups/team-lineups.module';
 import { TeamLineupsController } from './team-lineups/team-lineups.controller';
 import { TeamLineupsService } from './team-lineups/team-lineups.service';
 import { AuthModule } from './auth/auth.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthModule } from './auth/auth.module';
     MessageModule,
     TeamLineupsModule,
     AuthModule,
+    LocationsModule,
   ],
   controllers: [AppController, TeamLineupsController],
   providers: [AppService, ScraperService, TeamLineupsService],
