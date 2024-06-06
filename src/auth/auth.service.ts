@@ -39,8 +39,6 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    console.log('login', email, password);
-
     const user = await this.validateUser(email, password);
     if (!user) throw new Error('Invalid credentials');
 
