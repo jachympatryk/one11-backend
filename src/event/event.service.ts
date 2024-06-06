@@ -65,8 +65,15 @@ export class EventsService {
         name: eventData.name,
         event_type: eventData.event_type,
         start_time: new Date(eventData.start_time),
-        end_time: eventData.end_time ? new Date(eventData.end_time) : null,
         teamId: eventData.teamId,
+        locationId: eventData.locationId,
+        created_at: new Date(),
+
+        end_time: eventData.end_time ? new Date(eventData.end_time) : null,
+        lineupId: eventData?.lineupId || null,
+        description_before: eventData?.description_before || null,
+        own_transport: eventData?.own_transport || false,
+        collection_time: eventData?.collection_time || null,
       },
     });
 
