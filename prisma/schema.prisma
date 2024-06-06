@@ -23,13 +23,13 @@ model User {
 model Team {
   id            Int            @id @default(autoincrement())
   team_name     String
-  clubId        Int // Klucz obcy wskazujący na Club
+  clubId        Int
   club          Club           @relation(fields: [clubId], references: [id])
   created_at    DateTime       @default(now())
   players       Player[]
   functionaries Functionary[]
-  events        Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
-  scrapeUrl     String? // Opcjonalny URL do scrapowania danych o zespole
+  events        Event[]
+  scrapeUrl     String?
   Conversation  Conversation[]
   TeamLineup    TeamLineup[]
 }
