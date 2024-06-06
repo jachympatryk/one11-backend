@@ -64,7 +64,6 @@ export class EventsService {
       data: {
         name: eventData.name,
         event_type: eventData.event_type,
-        created_by: eventData.created_by,
         start_time: new Date(eventData.start_time),
         end_time: eventData.end_time ? new Date(eventData.end_time) : null,
         teamId: eventData.teamId,
@@ -78,7 +77,7 @@ export class EventsService {
     const attendances = players.map((player) => ({
       eventId: event.id,
       playerId: player.id,
-      status: AttendanceStatus.PENDING, // Używaj enuma zamiast stringa
+      status: AttendanceStatus.PENDING,
     }));
 
     await this.prisma.attendance.createMany({
