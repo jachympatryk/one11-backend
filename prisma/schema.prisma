@@ -1,0 +1,221 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int                 @id @default(autoincrement())
+  auth_id         String              @unique
+  email           String              @unique
+  signup_datetime DateTime            @default(now())
+  name            String
+  surname         String
+  created_at      DateTime            @default(now())
+  players         UserPlayers[]
+  functionaries   UserFunctionaries[]
+  password        String
+}
+
+model Team {
+  id            Int            @id @default(autoincrement())
+  team_name     String
+  clubId        Int
+  club          Club           @relation(fields: [clubId], references: [id])
+  created_at    DateTime       @default(now())
+  players       Player[]
+  functionaries Functionary[]
+  events        Event[]
+  scrapeUrl     String?
+  Conversation  Conversation[]
+  TeamLineup    TeamLineup[]
+}
+
+model Club {
+  id            Int           @id @default(autoincrement())
+  club_name     String
+  created_at    DateTime      @default(now())
+  teams         Team[]
+  players       Player[]
+  functionaries Functionary[]
+  locations     Location[]
+}
+
+model Location {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  map_pin    String?
+  clubId     Int // Klucz obcy wskazujący na Club
+  club       Club     @relation(fields: [clubId], references: [id]) // Definicja relacji
+  events     Event[] // Dodane pole wirtualne dla relacji jeden-do-wielu z Event
+}
+
+model League {
+  id          Int      @id @default(autoincrement())
+  league_name String
+  created_at  DateTime @default(now())
+}
+
+model Player {
+  id            Int            @id @default(autoincrement())
+  name          String
+  surname       String
+  date_of_birth DateTime
+  number        Int
+  active        Boolean        @default(true)
+  created_at    DateTime       @default(now())
+  teamId        Int?
+  team          Team?          @relation(fields: [teamId], references: [id])
+  clubId        Int?
+  club          Club?          @relation(fields: [clubId], references: [id])
+  users         UserPlayers[]
+  position      PlayerPosition
+  attendances   Attendance[]
+  Message       Message[]
+  LineupPlayer  LineupPlayer[]
+
+  @@index([teamId, clubId])
+}
+
+enum PlayerPosition {
+  GOALKEEPER
+  DEFENDER
+  MIDFIELDER
+  STRIKER
+}
+
+model Functionary {
+  id         Int                 @id @default(autoincrement())
+  name       String
+  surname    String
+  role       FunctionaryRoleType
+  created_at DateTime            @default(now())
+  teamId     Int? // Klucz obcy wskazujący na Team, opcjonalny
+  team       Team?               @relation(fields: [teamId], references: [id]) // Definicja relacji
+  clubId     Int? // Klucz obcy wskazujący na Club, opcjonalny
+  club       Club?               @relation(fields: [clubId], references: [id]) // Dodano relację z Club
+  users      UserFunctionaries[]
+  Message    Message[]
+}
+
+enum FunctionaryRoleType {
+  PRESIDENT
+  COACH
+  MANAGEMENT
+  OTHER
+  HEALTHCARE
+}
+
+model Event {
+  id                 Int          @id @default(autoincrement())
+  name               String?
+  event_type         EventType
+  created_at         DateTime     @default(now())
+  start_time         DateTime
+  end_time           DateTime?
+  lineupId           Int?
+  lineup             TeamLineup?  @relation(fields: [lineupId], references: [id])
+  collection_time    DateTime?
+  own_transport      Boolean?
+  description_before String?
+  description_after  String?
+  teamId             Int
+  team               Team         @relation(fields: [teamId], references: [id])
+  attendances        Attendance[]
+  locationId         Int?
+  location           Location?    @relation(fields: [locationId], references: [id])
+
+  @@index([teamId, locationId])
+}
+
+enum EventType {
+  MATCH
+  TRAINING
+  MEETING
+  OTHER
+}
+
+model Attendance {
+  id         Int              @id @default(autoincrement())
+  eventId    Int
+  playerId   Int
+  status     AttendanceStatus
+  created_at DateTime         @default(now())
+  event      Event            @relation(fields: [eventId], references: [id])
+  player     Player           @relation(fields: [playerId], references: [id])
+
+  @@unique([eventId, playerId])
+}
+
+enum AttendanceStatus {
+  CONFIRMED
+  ABSENT
+  LATE
+  EXCUSED
+  PENDING
+}
+
+model TeamLineup {
+  id            Int            @id @default(autoincrement())
+  name          String
+  formationName String         @default("Nieokreślona")
+  created_at    DateTime       @default(now())
+  teamId        Int
+  team          Team           @relation(fields: [teamId], references: [id])
+  players       LineupPlayer[]
+  Event         Event[]
+}
+
+model LineupPlayer {
+  id             Int        @id @default(autoincrement())
+  playerPosition String
+  playerId       Int
+  lineupId       Int
+  player         Player     @relation(fields: [playerId], references: [id])
+  lineup         TeamLineup @relation(fields: [lineupId], references: [id])
+}
+
+model UserPlayers {
+  userId   Int
+  playerId Int
+  user     User   @relation(fields: [userId], references: [id])
+  player   Player @relation(fields: [playerId], references: [id])
+
+  @@id([userId, playerId])
+}
+
+model UserFunctionaries {
+  userId        Int
+  functionaryId Int
+  user          User        @relation(fields: [userId], references: [id])
+  functionary   Functionary @relation(fields: [functionaryId], references: [id])
+
+  @@id([userId, functionaryId])
+}
+
+model Conversation {
+  id         Int       @id @default(autoincrement())
+  created_at DateTime  @default(now())
+  name       String
+  teamId     Int
+  team       Team      @relation(fields: [teamId], references: [id])
+  messages   Message[]
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  content        String
+  created_at     DateTime     @default(now())
+  conversationId Int // Klucz obcy wskazujący na Conversation
+  conversation   Conversation @relation(fields: [conversationId], references: [id]) // Relacja z Conversation
+  playerId       Int? // Klucz obcy opcjonalny wskazujący na Player
+  player         Player?      @relation(fields: [playerId], references: [id]) // Opcjonalna relacja z Player
+  functionaryId  Int? // Klucz obcy opcjonalny wskazujący na Functionary
+  functionary    Functionary? @relation(fields: [functionaryId], references: [id]) // Opcjonalna relacja z Functionary
+
+  @@index([conversationId, playerId, functionaryId])
+}
