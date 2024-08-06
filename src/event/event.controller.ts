@@ -19,6 +19,14 @@ export class EventsController {
     return this.eventsService.create(eventData);
   }
 
+  @Put(':id')
+  updateEvent(
+    @Param('id', ParseIntPipe) eventId: number,
+    @Body() updateData: any
+  ) {
+    return this.eventsService.updateEvent(eventId, updateData);
+  }
+
   @Put(':eventId/attendances/:playerId')
   updateAttendanceStatus(
     @Param('eventId', ParseIntPipe) eventId: number,

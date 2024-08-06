@@ -93,4 +93,30 @@ export class EventsService {
 
     return event;
   }
+
+  async updateEvent(eventId: number, updateData: any) {
+    try {
+      return await this.prisma.event.update({
+        where: { id: eventId },
+        data: {
+          name: updateData.name,
+          event_type: updateData.event_type,
+          start_time: updateData.start_time
+            ? new Date(updateData.start_time)
+            : undefined,
+          end_time: updateData.end_time
+            ? new Date(updateData.end_time)
+            : undefined,
+          locationId: updateData.locationId,
+          lineupId: updateData.lineupId || null,
+          description_before: updateData.description_before || null,
+          own_transport: updateData.own_transport || false,
+          collection_time: updateData.collection_time || null,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to update event:', error);
+      throw new Error('Error updating event');
+    }
+  }
 }
